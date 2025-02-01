@@ -20,3 +20,4 @@ text-ui-test/EXPECTED-UNIX.TXT
 
 # class files
 /src/main/java/Lebron.class
+/src/main/java/Task.class
