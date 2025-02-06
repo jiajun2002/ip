@@ -1,24 +1,30 @@
 import java.util.Scanner;
 
 public class Lebron {
-    private static final String LINEBREAK = "____________________________________________________________";
-    private static Task[] tasks = new Task[100];
+    private static final String LINE_BREAK = "____________________________________________________________";
+    private static final int MAX_TASK_SIZE = 100;
+    private static Task[] tasks = new Task[MAX_TASK_SIZE];
     private static int tasksSize = 0;
 
     public static void printLinebreak() {
-        System.out.println(LINEBREAK);
+        System.out.println(LINE_BREAK);
     }
 
-    public static void greetingMessage() {
+    public static void printGreetingMessage() {
         System.out.println("Hello! I'm Lebron, just a little kid from Akron");
         System.out.println("What we doing today?");
         printLinebreak();
     }
 
-    public static void addingMessage(Task[] tasks, int size) {
+    public static void printAddingMessage(Task[] tasks, int size) {
         System.out.println("Alright! Get ready to do this: ");
         System.out.println("--> " + tasks[size - 1]);
         System.out.println("Be confident in your ability! Current tasks: " + tasksSize);
+        printLinebreak();
+    }
+
+    public static void printErrorMessage(String error){
+        System.out.println("Sorry that's a foul! " + error);
         printLinebreak();
     }
 
@@ -26,48 +32,49 @@ public class Lebron {
         String task = todo.substring(todo.indexOf(" ") + 1);
         tasks[tasksSize] = new Todo(task);
         tasksSize++;
-        addingMessage(tasks, tasksSize);
+        printAddingMessage(tasks, tasksSize);
     }
 
     public static void addDeadline(String deadline) {
         int split = deadline.indexOf("/by");
         if (split == -1) {
-            System.out.println("That's a foul! Sorry man your deadline has to include '/by'");
-            printLinebreak();
+            printErrorMessage("Your deadline has to include '/by'");
             return;
         }
         int taskIdx = "deadline ".length();
         int dateIdx = split + "/by ".length();
+
         String task = deadline.substring(taskIdx, split);
         String date = deadline.substring(dateIdx);
+
         tasks[tasksSize] = new Deadline(task, date);
         tasksSize++;
-        addingMessage(tasks, tasksSize);
+        printAddingMessage(tasks, tasksSize);
     }
 
     public static void addEvent(String event) {
         int firstSplit = event.indexOf("/from");
         int secondSplit = event.indexOf("/to");
         if ((firstSplit == -1) || (secondSplit == -1)) {
-            System.out.println("That's a foul! Sorry man your event has to include '/from' and '/to'");
-            printLinebreak();
+            printErrorMessage("Your event has to include '/from' and '/to'");
             return;
         }
         int taskIdx = "event ".length();
         int fromIdx = firstSplit + "/from ".length();
         int toIdx = secondSplit + "/to ".length();
+
         String task = event.substring(taskIdx, firstSplit);
         String from = event.substring(fromIdx, secondSplit);
         String to = event.substring(toIdx);
+
         tasks[tasksSize] = new Event(task, from, to);
         tasksSize++;
-        addingMessage(tasks, tasksSize);
+        printAddingMessage(tasks, tasksSize);
     }
 
     public static void markTask(int idx) {
         if (tasks[idx - 1] == null) {
-            System.out.println("Sorry! That's a foul move, you gotta pick a valid one");
-            printLinebreak();
+            printErrorMessage("That task doesn't even exist!");
             return;
         }
         tasks[idx - 1].setStatus(true);
@@ -78,8 +85,7 @@ public class Lebron {
 
     public static void unmarkTask(int idx) {
         if (tasks[idx - 1] == null) {
-            System.out.println("Sorry! That's a foul move, you gotta pick a valid one");
-            printLinebreak();
+            printErrorMessage("That task doesn't even exist!");
             return;
         }
         tasks[idx - 1].setStatus(false);
@@ -97,7 +103,7 @@ public class Lebron {
     }
 
     public static void main(String[] args) {
-        greetingMessage();
+        printGreetingMessage();
         Scanner input = new Scanner(System.in);
         while(true) {
             String line = input.nextLine();
@@ -110,6 +116,7 @@ public class Lebron {
                 printTasks();
                 continue;
             }
+
             String[] words = line.split(" ");
             int idx;
             switch(words[0]) {
