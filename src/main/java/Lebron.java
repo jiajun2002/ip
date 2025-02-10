@@ -28,22 +28,32 @@ public class Lebron {
         printLinebreak();
     }
 
-    public static void addTodo(String todo) {
+    public static void checkEmptyTask(String task) throws EmptyTaskException {
+        String[] words = task.split(" ");
+        if (words.length < 2 || words[1].equals("/by") || words[1].equals("/from")) {
+            throw new EmptyTaskException();
+        }
+    }
+
+    public static void addTodo(String todo)
+            throws EmptyTaskException {
+        checkEmptyTask(todo);
         String task = todo.substring(todo.indexOf(" ") + 1);
         tasks[tasksSize] = new Todo(task);
         tasksSize++;
         printAddingMessage(tasks, tasksSize);
     }
 
-    public static void addDeadline(String deadline) {
+    public static void addDeadline(String deadline)
+            throws EmptyTaskException, InvalidTaskFormatException {
+        checkEmptyTask(deadline);
         int split = deadline.indexOf("/by");
         if (split == -1) {
-            printErrorMessage("Your deadline has to include '/by'");
-            return;
+            throw new InvalidTaskFormatException();
         }
+
         int taskIdx = "deadline ".length();
         int dateIdx = split + "/by ".length();
-
         String task = deadline.substring(taskIdx, split);
         String date = deadline.substring(dateIdx);
 
@@ -52,12 +62,13 @@ public class Lebron {
         printAddingMessage(tasks, tasksSize);
     }
 
-    public static void addEvent(String event) {
+    public static void addEvent(String event)
+            throws EmptyTaskException, InvalidTaskFormatException {
+        checkEmptyTask(event);
         int firstSplit = event.indexOf("/from");
         int secondSplit = event.indexOf("/to");
         if ((firstSplit == -1) || (secondSplit == -1)) {
-            printErrorMessage("Your event has to include '/from' and '/to'");
-            return;
+            throw new InvalidTaskFormatException();
         }
         int taskIdx = "event ".length();
         int fromIdx = firstSplit + "/from ".length();
@@ -72,10 +83,14 @@ public class Lebron {
         printAddingMessage(tasks, tasksSize);
     }
 
-    public static void markTask(int idx) {
-        if (tasks[idx - 1] == null) {
-            printErrorMessage("That task doesn't even exist!");
-            return;
+    public static void markTask(String[] taskInput)
+            throws EmptyTaskException, InvalidMarkingException {
+        if (taskInput.length < 2) {
+            throw new EmptyTaskException();
+        }
+        int idx = Integer.parseInt(taskInput[1]);
+        if (idx <= 0 || idx > tasksSize || taskInput.length > 2) {
+            throw new InvalidMarkingException();
         }
         tasks[idx - 1].setStatus(true);
         System.out.println("Done and dusted, you're gonna shatter my records in no time!");
@@ -83,10 +98,14 @@ public class Lebron {
         printLinebreak();
     }
 
-    public static void unmarkTask(int idx) {
-        if (tasks[idx - 1] == null) {
-            printErrorMessage("That task doesn't even exist!");
-            return;
+    public static void unmarkTask(String[] taskInput)
+            throws EmptyTaskException, InvalidMarkingException {
+        if (taskInput.length < 2) {
+            throw new EmptyTaskException();
+        }
+        int idx = Integer.parseInt(taskInput[1]);
+        if (idx <= 0 || idx > tasksSize || taskInput.length > 2) {
+            throw new InvalidMarkingException();
         }
         tasks[idx - 1].setStatus(false);
         System.out.println("I ain't worried, we'll clear that soon!");
@@ -102,45 +121,76 @@ public class Lebron {
         printLinebreak();
     }
 
+    public static void processCommand(String line)
+            throws UnknownCommandException {
+        String[] words = line.split(" ");
+        switch(words[0]) {
+        case "mark":
+            try {
+                markTask(words);
+            } catch (EmptyTaskException e) {
+                printErrorMessage("Try inputting a number after mark!");
+            } catch (InvalidMarkingException e) {
+                printErrorMessage("That task doesn't exist yet, try inputting another number!");
+            }
+            break;
+        case "unmark":
+            try {
+                unmarkTask(words);
+            } catch (EmptyTaskException e) {
+                printErrorMessage("Try inputting a number after unmark!");
+            } catch (InvalidMarkingException e) {
+                printErrorMessage("That task doesn't exist yet, try inputting another number!");
+            }
+            break;
+        case "todo":
+            try {
+                addTodo(line);
+            } catch (EmptyTaskException e) {
+                printErrorMessage("How you gonna have a todo for nothing!");
+            }
+            break;
+        case "deadline":
+            try {
+                addDeadline(line);
+            } catch (EmptyTaskException e) {
+                printErrorMessage("Your deadline can't be empty man!");
+            } catch (InvalidTaskFormatException e) {
+                printErrorMessage("Your deadline format has to include '/by'!");
+            }
+            break;
+        case "event":
+            try {
+                addEvent(line);
+            } catch (EmptyTaskException e) {
+                printErrorMessage("An event where nothing happens? Not on my watch.");
+            } catch (InvalidTaskFormatException e) {
+                printErrorMessage("Your event format has to include '/from' and '/to!");
+            }
+            break;
+        default:
+            throw new UnknownCommandException();
+        }
+    }
+
     public static void main(String[] args) {
         printGreetingMessage();
         Scanner input = new Scanner(System.in);
         while(true) {
             String line = input.nextLine();
-            if (line.equals("bye")) {
+            if (line.equalsIgnoreCase("bye")) {
                 System.out.println("Aight catch you later, see you at the game!");
                 printLinebreak();
                 break;
             }
-            if (line.equals("list")) {
+            if (line.equalsIgnoreCase("list")) {
                 printTasks();
                 continue;
             }
-
-            String[] words = line.split(" ");
-            int idx;
-            switch(words[0]) {
-            case "mark":
-                idx = Integer.parseInt(words[1]);
-                markTask(idx);
-                break;
-            case "unmark":
-                idx = Integer.parseInt(words[1]);
-                unmarkTask(idx);
-                break;
-            case "todo":
-                addTodo(line);
-                break;
-            case "deadline":
-                addDeadline(line);
-                break;
-            case "event":
-                addEvent(line);
-                break;
-            default:
-                System.out.println("Personally, I think that's a bad play. Try starting with 'todo', 'deadline', or 'event'!");
-                printLinebreak();
-                break;
+            try {
+                processCommand(line);
+            } catch (UnknownCommandException e) {
+                printErrorMessage("Not sure what you're trying to make me do, start off with todo/deadline/event instead!");
             }
         }
     }
