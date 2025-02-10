@@ -1,13 +1,7 @@
 package lebron.ui;
 
-import lebron.exception.EmptyTaskException;
-import lebron.exception.InvalidMarkingException;
-import lebron.exception.InvalidTaskFormatException;
-import lebron.exception.UnknownCommandException;
-import lebron.task.Deadline;
-import lebron.task.Event;
-import lebron.task.Task;
-import lebron.task.Todo;
+import lebron.exception.*;
+import lebron.task.*;
 
 import java.util.Scanner;
 
