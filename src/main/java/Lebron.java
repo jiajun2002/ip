@@ -52,10 +52,10 @@ public class Lebron {
             throw new InvalidTaskFormatException();
         }
 
-        int taskIdx = "deadline ".length();
-        int dateIdx = split + "/by ".length();
-        String task = deadline.substring(taskIdx, split);
-        String date = deadline.substring(dateIdx);
+        int taskStartingPos = "deadline ".length();
+        int dateStartingPos = split + "/by ".length();
+        String task = deadline.substring(taskStartingPos, split);
+        String date = deadline.substring(dateStartingPos);
 
         tasks[tasksSize] = new Deadline(task, date);
         tasksSize++;
@@ -70,13 +70,13 @@ public class Lebron {
         if ((firstSplit == -1) || (secondSplit == -1)) {
             throw new InvalidTaskFormatException();
         }
-        int taskIdx = "event ".length();
-        int fromIdx = firstSplit + "/from ".length();
-        int toIdx = secondSplit + "/to ".length();
+        int taskStartingPos = "event ".length();
+        int fromStartingPos = firstSplit + "/from ".length();
+        int toStartingPos = secondSplit + "/to ".length();
 
-        String task = event.substring(taskIdx, firstSplit);
-        String from = event.substring(fromIdx, secondSplit);
-        String to = event.substring(toIdx);
+        String task = event.substring(taskStartingPos, firstSplit);
+        String from = event.substring(fromStartingPos, secondSplit);
+        String to = event.substring(toStartingPos);
 
         tasks[tasksSize] = new Event(task, from, to);
         tasksSize++;
