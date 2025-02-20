@@ -4,12 +4,13 @@ import lebron.exception.*;
 import lebron.task.*;
 
 import java.util.Scanner;
+import java.util.ArrayList;
 
 public class Lebron {
     private static final String LINE_BREAK = "____________________________________________________________";
-    private static final int MAX_TASK_SIZE = 100;
-    private static Task[] tasks = new Task[MAX_TASK_SIZE];
-    private static int tasksSize = 0;
+//    private static final int MAX_TASK_SIZE = 100;
+    private static ArrayList<Task> tasks = new ArrayList<>();
+   // private static int tasksSize = 0;
 
     public static void printLinebreak() {
         System.out.println(LINE_BREAK);
@@ -21,10 +22,10 @@ public class Lebron {
         printLinebreak();
     }
 
-    public static void printAddingMessage(Task[] tasks, int size) {
+    public static void printAddingMessage(String task) {
         System.out.println("Alright! Get ready to do this: ");
-        System.out.println("--> " + tasks[size - 1]);
-        System.out.println("Be confident in your ability! Current tasks: " + tasksSize);
+        System.out.println("--> " + task);
+        System.out.println("Be confident in your ability! Current tasks: " + tasks.size());
         printLinebreak();
     }
 
@@ -40,13 +41,18 @@ public class Lebron {
         }
     }
 
+    public static void checkEmptyTaskArr(String[] taskInput) throws EmptyTaskException {
+        if (taskInput.length < 2) {
+            throw new EmptyTaskException();
+        }
+    }
+
     public static void addTodo(String todo)
             throws EmptyTaskException {
         checkEmptyTask(todo);
         String task = todo.substring(todo.indexOf(" ") + 1);
-        tasks[tasksSize] = new Todo(task);
-        tasksSize++;
-        printAddingMessage(tasks, tasksSize);
+        tasks.add(new Todo(task));
+        printAddingMessage(task);
     }
 
     public static void addDeadline(String deadline)
@@ -62,9 +68,8 @@ public class Lebron {
         String task = deadline.substring(taskStartingPos, split);
         String date = deadline.substring(dateStartingPos);
 
-        tasks[tasksSize] = new Deadline(task, date);
-        tasksSize++;
-        printAddingMessage(tasks, tasksSize);
+        tasks.add(new Deadline(task, date));
+        printAddingMessage(task);
     }
 
     public static void addEvent(String event)
@@ -83,45 +88,60 @@ public class Lebron {
         String from = event.substring(fromStartingPos, secondSplit);
         String to = event.substring(toStartingPos);
 
-        tasks[tasksSize] = new Event(task, from, to);
-        tasksSize++;
-        printAddingMessage(tasks, tasksSize);
+        tasks.add(new Event(task, from, to));
+        printAddingMessage(task);
+    }
+
+    public static void deleteTask(String[] taskInput)
+            throws EmptyTaskException, InvalidDeleteException {
+        checkEmptyTaskArr(taskInput);
+        int idx = Integer.parseInt(taskInput[1]) - 1;
+        if (idx < 0 || idx >= tasks.size() || taskInput.length > 2) {
+            throw new InvalidDeleteException();
+        }
+        Task toPrint = tasks.get(idx);
+        tasks.remove(idx);
+        System.out.println("Traded! We won't be seeing him ever again: ");
+        System.out.println(toPrint);
+        System.out.println("Remaining tasks: " + tasks.size());
+        printLinebreak();
     }
 
     public static void markTask(String[] taskInput)
             throws EmptyTaskException, InvalidMarkingException {
-        if (taskInput.length < 2) {
-            throw new EmptyTaskException();
-        }
-        int idx = Integer.parseInt(taskInput[1]);
-        if (idx <= 0 || idx > tasksSize || taskInput.length > 2) {
+        checkEmptyTaskArr(taskInput);
+        int idx = Integer.parseInt(taskInput[1]) - 1;
+        if (idx < 0 || idx >= tasks.size() || taskInput.length > 2) {
             throw new InvalidMarkingException();
         }
-        tasks[idx - 1].setStatus(true);
+        tasks.get(idx).setStatus(true);
         System.out.println("Done and dusted, you're gonna shatter my records in no time!");
-        System.out.println(tasks[idx - 1]);
+        System.out.println(tasks.get(idx));
         printLinebreak();
     }
 
     public static void unmarkTask(String[] taskInput)
             throws EmptyTaskException, InvalidMarkingException {
-        if (taskInput.length < 2) {
-            throw new EmptyTaskException();
-        }
-        int idx = Integer.parseInt(taskInput[1]);
-        if (idx <= 0 || idx > tasksSize || taskInput.length > 2) {
+        checkEmptyTaskArr(taskInput);
+        int idx = Integer.parseInt(taskInput[1]) - 1;
+        if (idx < 0 || idx >= tasks.size() || taskInput.length > 2) {
             throw new InvalidMarkingException();
         }
-        tasks[idx - 1].setStatus(false);
+        tasks.get(idx).setStatus(false);
         System.out.println("I ain't worried, we'll clear that soon!");
-        System.out.println(tasks[idx - 1]);
+        System.out.println(tasks.get(idx));
         printLinebreak();
     }
 
     public static void printTasks() {
-        for (int i = 0; i < tasksSize; i++) {
+        if (tasks.isEmpty()) {
+            System.out.println("No tasks here, trying adding a todo/deadline/event!");
+            printLinebreak();
+            return;
+        }
+        for (int i = 0; i < tasks.size(); i++) {
             System.out.print(i+1 + ". ");
-            System.out.println(tasks[i]);
+            System.out.println(tasks.get(i));
         }
         printLinebreak();
     }
@@ -171,6 +191,15 @@ public class Lebron {
                 printErrorMessage("An event where nothing happens? Not on my watch.");
             } catch (InvalidTaskFormatException e) {
                 printErrorMessage("Your event format has to include '/from' and '/to!");
+            }
+            break;
+        case "delete":
+            try {
+                deleteTask(words);
+            } catch (EmptyTaskException e) {
+                printErrorMessage("You gotta delete something at least!");
+            } catch (InvalidDeleteException e) {
+                printErrorMessage("Your form's a little off. Try inputting a valid number after 'delete'!");
             }
             break;
         default:
