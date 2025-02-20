@@ -166,6 +166,11 @@ public class Lebron {
         System.out.println(toPrint);
         System.out.println("Remaining tasks: " + tasks.size());
         printLinebreak();
+        try {
+            saveTasksToFile();
+        } catch (IOException e) {
+            printErrorMessage("Error saving tasks after deletion: " + e.getMessage());
+        }
     }
 
     public static void markTask(String[] taskInput)
@@ -179,6 +184,11 @@ public class Lebron {
         System.out.println("Done and dusted, you're gonna shatter my records in no time!");
         System.out.println(tasks.get(idx));
         printLinebreak();
+        try {
+            saveTasksToFile();
+        } catch (IOException e) {
+            printErrorMessage("Error saving tasks after deletion: " + e.getMessage());
+        }
     }
 
     public static void unmarkTask(String[] taskInput)
@@ -192,6 +202,11 @@ public class Lebron {
         System.out.println("I ain't worried, we'll clear that soon!");
         System.out.println(tasks.get(idx));
         printLinebreak();
+        try {
+            saveTasksToFile();
+        } catch (IOException e) {
+            printErrorMessage("Error saving tasks after deletion: " + e.getMessage());
+        }
     }
 
     public static void printTasks() {
