@@ -4,12 +4,59 @@ import lebron.exception.*;
 import lebron.task.*;
 
 import java.util.Scanner;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class Lebron {
     private static final String LINE_BREAK = "____________________________________________________________";
     private static final int MAX_TASK_SIZE = 100;
     private static Task[] tasks = new Task[MAX_TASK_SIZE];
+    private static final String FILE_PATH = "./data/Lebron.txt";
     private static int tasksSize = 0;
+
+    public static void loadTasksFromFile() {
+        File f = new File(FILE_PATH);
+        if (!f.exists()) {
+            new File("./data").mkdirs();
+            return;
+        }
+        Scanner s;
+        try {
+            s = new Scanner(f);
+        } catch(FileNotFoundException e) {
+            printErrorMessage(e.getMessage());
+            return;
+        }
+        while (s.hasNextLine()) {
+            String line = s.nextLine();
+            String[] taskData = line.split(" \\| ");
+            boolean isDone = taskData[1].equals("1");
+            switch (taskData[0]) {
+            case "T":
+                tasks[tasksSize++] = new Todo(taskData[2], isDone);
+                break;
+            case "D":
+                tasks[tasksSize++] = new Deadline(taskData[2], taskData[3], isDone);
+                break;
+            case "E":
+                tasks[tasksSize++] = new Event(taskData[2], taskData[3], taskData[4], isDone);
+                break;
+            default:
+                System.out.println("No clue what this is: " + taskData[0]);
+                break;
+            }
+        }
+    }
+
+    private static void saveTasksToFile() throws IOException {
+        FileWriter writer = new FileWriter(FILE_PATH);
+            for (int i = 0; i < tasksSize; i++) {
+                writer.write(tasks[i].toTxtFile() + System.lineSeparator());
+            }
+            writer.close();
+    }
 
     public static void printLinebreak() {
         System.out.println(LINE_BREAK);
@@ -47,6 +94,11 @@ public class Lebron {
         tasks[tasksSize] = new Todo(task);
         tasksSize++;
         printAddingMessage(tasks, tasksSize);
+        try {
+            saveTasksToFile();
+        } catch (IOException e) {
+            printErrorMessage(e.getMessage());
+        }
     }
 
     public static void addDeadline(String deadline)
@@ -65,6 +117,11 @@ public class Lebron {
         tasks[tasksSize] = new Deadline(task, date);
         tasksSize++;
         printAddingMessage(tasks, tasksSize);
+        try {
+            saveTasksToFile();
+        } catch (IOException e) {
+            printErrorMessage(e.getMessage());
+        }
     }
 
     public static void addEvent(String event)
@@ -86,6 +143,11 @@ public class Lebron {
         tasks[tasksSize] = new Event(task, from, to);
         tasksSize++;
         printAddingMessage(tasks, tasksSize);
+        try {
+            saveTasksToFile();
+        } catch (IOException e) {
+            printErrorMessage(e.getMessage());
+        }
     }
 
     public static void markTask(String[] taskInput)
@@ -180,6 +242,7 @@ public class Lebron {
 
     public static void main(String[] args) {
         printGreetingMessage();
+        loadTasksFromFile();
         Scanner input = new Scanner(System.in);
         while(true) {
             String line = input.nextLine();
