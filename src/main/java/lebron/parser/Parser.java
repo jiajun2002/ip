@@ -71,6 +71,15 @@ public class Parser {
                 ui.printErrorMessage("Your form's a little off. Try inputting a valid number after 'delete'!");
             }
             break;
+        case "find":
+            try {
+                tasks.findTask(words);
+            } catch (EmptyTaskException e) {
+                ui.printErrorMessage("You gotta find something dude!");
+            } catch (InvalidFindingException e) {
+                ui.printErrorMessage("Slow down there, keep it to a single keyword.");
+            }
+            break;
         default:
             throw new UnknownCommandException();
         }

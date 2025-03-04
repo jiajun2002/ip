@@ -67,8 +67,9 @@ public class TaskList {
         String task = deadline.substring(taskStartingPos, split);
         String date = deadline.substring(dateStartingPos);
 
-        tasks.add(new Deadline(task, date));
-        ui.printAddingMessage(task, tasks.size());
+        Deadline toAdd = new Deadline(task, date);
+        tasks.add(toAdd);
+        ui.printAddingMessage(toAdd.toString(), tasks.size());
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
@@ -98,8 +99,9 @@ public class TaskList {
         String from = event.substring(fromStartingPos, secondSplit);
         String to = event.substring(toStartingPos);
 
-        tasks.add(new Event(task, from, to));
-        ui.printAddingMessage(task, tasks.size());
+        Event toAdd = new Event(task, from, to);
+        tasks.add(toAdd);
+        ui.printAddingMessage(toAdd.toString(), tasks.size());
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
@@ -172,6 +174,27 @@ public class TaskList {
         } catch (IOException e) {
             System.out.println("Hmmmm can't seem to save this: " + e.getMessage());
         }
+    }
+
+    public void findTask(String[] taskInput) throws EmptyTaskException, InvalidFindingException {
+        checkEmptyTaskArr(taskInput);
+        if (taskInput.length > 2) {
+            throw new InvalidFindingException();
+        }
+        String toFind = taskInput[1].toLowerCase();
+        ArrayList<Task> foundTasks = new ArrayList<>();
+        for (Task task : tasks) {
+            String taskLowerCase = task.description.toLowerCase();
+            if (taskLowerCase.contains(toFind)) {
+                foundTasks.add(task);
+            }
+        }
+        if (foundTasks.isEmpty()) {
+            System.out.println("Can't seem to find any tasks here! Try another one!");
+            ui.printLinebreak();
+            return;
+        }
+        ui.printFoundMessage(foundTasks);
     }
 
     /**
