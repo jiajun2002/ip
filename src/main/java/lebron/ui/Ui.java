@@ -2,6 +2,8 @@ package lebron.ui;
 
 import lebron.task.Task;
 import lebron.task.TaskList;
+
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class Ui {
@@ -40,6 +42,15 @@ public class Ui {
         System.out.println("Traded! We won't be seeing him ever again: ");
         System.out.println(task);
         System.out.println("Remaining tasks: " + size);
+        printLinebreak();
+    }
+
+    public void printFoundMessage(ArrayList<Task> foundTasks) {
+        System.out.println("Got em! Here are the matching tasks!");
+        for (int i = 0; i < foundTasks.size(); i++) {
+            System.out.print(i+1 + ". ");
+            System.out.println(foundTasks.get(i));
+        }
         printLinebreak();
     }
 
