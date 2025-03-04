@@ -6,6 +6,12 @@ import lebron.parser.Parser;
 import lebron.ui.Ui;
 import lebron.task.*;
 
+/**
+ * The main class for the Lebron task management application.
+ * Responsible for initialisation, processing user input, and user interaction.
+ *
+ * @author Tong Jia Jun
+ */
 public class Lebron {
 
     private static final String FILE_PATH = "./data/Lebron.txt";
@@ -13,12 +19,21 @@ public class Lebron {
     private Ui ui;
     private TaskList tasks;
 
+    /**
+     * Constructs a {@code Lebron} instance with the specified file path for storage.
+     *
+     * @param filePath The file path where tasks are stored.
+     */
     public Lebron(String filePath) {
         ui = new Ui();
         storage = new Storage(filePath);
         tasks = new TaskList(storage.loadTasks(), storage, ui);
     }
 
+    /**
+     * Runs the main application loop and handles user commands.
+     * Terminated when user input is "bye".
+     */
     public void run() {
         ui.printGreetingMessage();
         while(true) {
@@ -40,6 +55,9 @@ public class Lebron {
         }
     }
 
+    /**
+     * Entry point of the application.
+     */
     public static void main(String[] args) {
         new Lebron(FILE_PATH).run();
     }

@@ -12,13 +12,24 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+/**
+ * Handles the loading and saving of tasks into the disk.
+ */
 public class Storage {
     private String filePath;
 
+    /**
+     * Constructs a new {@code Storage} class with a given file path.
+     * @param filePath The file path of the stored tasks.
+     */
     public Storage(String filePath) {
         this.filePath = filePath;
     }
 
+    /**
+     * Loads tasks from the text file into a new Task ArrayList.
+     * @return The loaded ArrayList
+     */
     public ArrayList<Task> loadTasks() {
         ArrayList<Task> tasks = new ArrayList<>();
         File f = new File(filePath);
@@ -55,6 +66,11 @@ public class Storage {
         return tasks;
     }
 
+    /**
+     * Saves the task list into the text file.
+     * @param tasks The tasks to be saved.
+     * @throws IOException If an I/O exception has occurred.
+     */
     public void saveTasks(ArrayList<Task> tasks) throws IOException {
         FileWriter writer = new FileWriter(filePath);
         for (Task task : tasks) {
