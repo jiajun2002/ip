@@ -24,6 +24,6 @@ public class Event extends Task {
 
     @Override
     public String toTxtFile() {
-        return "E | " + super.toTxtFile() + " | " + from + "| " + to;
+        return "E | " + super.toTxtFile() + " | " + from + " | " + to;
     }
 }
