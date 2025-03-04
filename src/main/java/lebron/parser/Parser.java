@@ -4,7 +4,18 @@ import lebron.exception.*;
 import lebron.task.TaskList;
 import lebron.ui.Ui;
 
+/**
+ * Deals with processing user command and executes the appropriate command.
+ */
 public class Parser {
+    /**
+     * Interprets user input and executes the appropriate command.
+     *
+     * @param line The user input.
+     * @param tasks The current task list.
+     * @param ui UI for dealing with user interactions.
+     * @throws UnknownCommandException If the command is not recognised.
+     */
     public static void processCommand(String line, TaskList tasks, Ui ui) throws UnknownCommandException {
         String[] words = line.split(" ");
         switch(words[0]) {

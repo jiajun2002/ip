@@ -1,5 +1,10 @@
 package lebron.task;
 
+/**
+ * Represents an abstract task to be subclassed by other classes.
+ * Provides methods to check and mark if a task is done and
+ * get the task description.
+ */
 public class Task {
     protected String description;
     protected boolean isDone;
