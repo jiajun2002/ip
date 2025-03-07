@@ -18,7 +18,7 @@ Adds a Todo - a task containing only a description.
 **Output:**
 ```
 Alright! Get ready to do this: 
---> play basketball
+--> [T][ ] play basketball
 Be confident in your ability! Current tasks: 1
 ```
 
