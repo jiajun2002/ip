@@ -126,8 +126,10 @@ Ends the application.
 ```
 Aight catch you later, see you at the game!
 ```
-
+ 
 ## Command Summary
+
+
 | command    | description                       | format |
 |------------|-----------------------------------| --- |
 | `todo`     | Adds a todo task                  |`todo DESCRIPTION` |

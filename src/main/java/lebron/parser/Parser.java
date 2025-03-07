@@ -26,6 +26,8 @@ public class Parser {
                 ui.printErrorMessage("Try inputting a number after mark!");
             } catch (InvalidMarkingException e) {
                 ui.printErrorMessage("That task doesn't exist yet, try inputting another number!");
+            } catch (NumberFormatException e) {
+                ui.printErrorMessage("That's not even a number man!");
             }
             break;
         case "unmark":
@@ -35,6 +37,8 @@ public class Parser {
                 ui.printErrorMessage("Try inputting a number after unmark!");
             } catch (InvalidMarkingException e) {
                 ui.printErrorMessage("That task doesn't exist yet, try inputting another number!");
+            } catch (NumberFormatException e) {
+            ui.printErrorMessage("That's not even a number man!");
             }
             break;
         case "todo":
@@ -69,6 +73,8 @@ public class Parser {
                 ui.printErrorMessage("You gotta delete something at least!");
             } catch (InvalidDeleteException e) {
                 ui.printErrorMessage("Your form's a little off. Try inputting a valid number after 'delete'!");
+            } catch (NumberFormatException e) {
+                ui.printErrorMessage("That's not even a number man!");
             }
             break;
         case "find":

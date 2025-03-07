@@ -39,8 +39,9 @@ public class TaskList {
     public void addTodo(String todo) throws EmptyTaskException {
         checkEmptyTask(todo);
         String task = todo.substring(todo.indexOf(" ") + 1);
-        tasks.add(new Todo(task));
-        ui.printAddingMessage(task, tasks.size());
+        Todo toAdd = new Todo(task);
+        tasks.add(toAdd);
+        ui.printAddingMessage(toAdd.toString(), tasks.size());
         try {
             storage.saveTasks(tasks);
         } catch (IOException e) {
@@ -116,7 +117,7 @@ public class TaskList {
      * @throws EmptyTaskException If no task index is provided.
      * @throws InvalidDeleteException If the index is out of range.
      */
-    public void deleteTask(String[] taskInput) throws EmptyTaskException, InvalidDeleteException {
+    public void deleteTask(String[] taskInput) throws EmptyTaskException, InvalidDeleteException, NumberFormatException {
         checkEmptyTaskArr(taskInput);
         int idx = Integer.parseInt(taskInput[1]) - 1;
         if (idx < 0 || idx >= tasks.size() || taskInput.length > 2) {
@@ -139,7 +140,7 @@ public class TaskList {
      * @throws EmptyTaskException If no task index is provided.
      * @throws InvalidMarkingException If the index is out of range.
      */
-    public void markTask(String[] taskInput) throws EmptyTaskException, InvalidMarkingException {
+    public void markTask(String[] taskInput) throws EmptyTaskException, InvalidMarkingException, NumberFormatException{
         checkEmptyTaskArr(taskInput);
         int idx = Integer.parseInt(taskInput[1]) - 1;
         if (idx < 0 || idx >= tasks.size() || taskInput.length > 2) {
@@ -161,7 +162,7 @@ public class TaskList {
      * @throws EmptyTaskException If no task index is provided.
      * @throws InvalidMarkingException If the index is out of range.
      */
-    public void unmarkTask(String[] taskInput) throws EmptyTaskException, InvalidMarkingException {
+    public void unmarkTask(String[] taskInput) throws EmptyTaskException, InvalidMarkingException, NumberFormatException {
         checkEmptyTaskArr(taskInput);
         int idx = Integer.parseInt(taskInput[1]) - 1;
         if (idx < 0 || idx >= tasks.size() || taskInput.length > 2) {
@@ -176,6 +177,13 @@ public class TaskList {
         }
     }
 
+    /**
+     * Finds a task in the task list with a given keyword.
+     *
+     * @param taskInput The input containing the keyword.
+     * @throws EmptyTaskException If no keyword is given.
+     * @throws InvalidFindingException If no task is found with the keyword.
+     */
     public void findTask(String[] taskInput) throws EmptyTaskException, InvalidFindingException {
         checkEmptyTaskArr(taskInput);
         if (taskInput.length > 2) {
