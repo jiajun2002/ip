@@ -59,7 +59,7 @@ public class TaskList {
     public void addDeadline(String deadline) throws EmptyTaskException, InvalidTaskFormatException {
         checkEmptyTask(deadline);
         int split = deadline.indexOf("/by");
-        if (split == -1) {
+        if (split == -1 || split + "/by".length() >= deadline.length()) {
             throw new InvalidTaskFormatException();
         }
 
@@ -95,6 +95,10 @@ public class TaskList {
         int taskStartingPos = "event ".length();
         int fromStartingPos = firstSplit + "/from ".length();
         int toStartingPos = secondSplit + "/to ".length();
+
+        if (taskStartingPos >= firstSplit || fromStartingPos >= secondSplit || toStartingPos >= event.length()) {
+            throw new InvalidTaskFormatException();
+        }
 
         String task = event.substring(taskStartingPos, firstSplit);
         String from = event.substring(fromStartingPos, secondSplit);

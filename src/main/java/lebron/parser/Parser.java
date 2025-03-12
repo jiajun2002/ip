@@ -54,7 +54,7 @@ public class Parser {
             } catch (EmptyTaskException e) {
                 ui.printErrorMessage("Your deadline can't be empty man!");
             } catch (InvalidTaskFormatException e) {
-                ui.printErrorMessage("Your deadline format has to include '/by'!");
+                ui.printErrorMessage("Your deadline format has to include '/by [DATE]'!");
             }
             break;
         case "event":
@@ -63,7 +63,7 @@ public class Parser {
             } catch (EmptyTaskException e) {
                 ui.printErrorMessage("An event where nothing happens? Not on my watch.");
             } catch (InvalidTaskFormatException e) {
-                ui.printErrorMessage("Your event format has to include '/from' and '/to!");
+                ui.printErrorMessage("Your event format has to include '/from [DATE]' and '/to [DATE]!'");
             }
             break;
         case "delete":
